@@ -6,11 +6,12 @@ from django.db import models
 from django.conf import settings
 
 
-
 # Create your models here.
 # Verbose_name — удобочитаемое имя поля,
 # Default -  Значение по умолчанию для поля
-# Свойство blank отвечает за обязательность заполнения поля в админке. То есть если указать blank = True - поле будет необязательным к заполнению. Если указать blank = False - такое поле обязательно нужно будет заполнить.
+# Свойство blank отвечает за обязательность заполнения поля в админке.
+# То есть если указать blank = True - поле будет необязательным к заполнению.
+# Если указать blank = False - такое поле обязательно нужно будет заполнить.
 
 
 class Course(models.Model):
@@ -40,6 +41,9 @@ class Lesson(models.Model):
         verbose_name_plural = 'Уроки'
         verbose_name = 'Урок'
         ordering = ['course']
+
+    def __str__(self):
+        return f'{self.course}: Урок {self.name}'
 
 
 class Tracking(models.Model):

@@ -11,12 +11,12 @@ from .functions import get_timestamp_path_user
 
 class User(AbstractUser):  # Описание в таблице в базе данных
     email = models.EmailField(unique=True, verbose_name='Email')
-    birthday = models.DateField(verbose_name='Дата рождения', blank=False)
+    birthday = models.DateField(verbose_name='Дата рождения', blank=False, null=True) # Выполнил эмиграцию.
     description = models.TextField(verbose_name='Обо мне',  max_length=100, null=True, blank=True, default='')
     avatar = models.ImageField(verbose_name='Фото', blank=True, upload_to=get_timestamp_path_user)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username'] #  Атрибут отвечающий за поля суперпользователя.  Мы добавили поле.
 
     class Meta:
         verbose_name_plural = 'Участники'
