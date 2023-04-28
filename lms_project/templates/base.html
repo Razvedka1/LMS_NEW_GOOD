@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Codeby - {% block title %}онлайн-курсы{% endblock %}</title>
-    <link> rel="stylesheet" href="https://fontawesome.ru/all-icons/"
+    <link rel="stylesheet" href="static fontawesomefree/css/all.min.css">
 </head>
 <body>
 <header>
     <nav class="header_container">
         <div class="logo_container">
-            <a class="logo" href="{% url 'index' %}"><img src="{% static 'img/logo.png'%}" alt="Лого сайта" # Тут почему то не выыводит НЕПОНИМАЮ!!! всё делаю как по видео
+            <a class="logo" href="{% url 'index' %}"><img src="{% static 'img/logo.png'%}" alt="Лого сайта"
                                                           title="Логотип сайта"></a>
             <div class="describer">
                 <div class="title"><h2 translate="no">Codeby</h2></div>
@@ -25,7 +25,7 @@
                 <div class="submenu_profile" style="display: none;">
                     <div>
                         <p class="fa fa-sign-out"></p>
-                        <a style="color: rgba(238, 68, 0.83)" href="{% url 'logout' %}">Выход</a>
+                        <a style="color: rgba(238, 68, 0.83)" href="{% url 'FontAwesomeIcon icon=fa-thin fa-circle-xmark' %}">Выход</a>
                     </div>
                 </div>
             </div>
