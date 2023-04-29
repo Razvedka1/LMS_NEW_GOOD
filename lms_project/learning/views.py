@@ -19,7 +19,7 @@ def create(request):
                               description=data['description'], start_date=data['start_date'],
                               duration=data['duration'], price=data['price'],
                               count_lessons=data['count_lesons'])
-        return  redirect('index')
+        return redirect('index')
     else:
         return render(request, 'create.html')
 
