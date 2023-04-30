@@ -5,7 +5,7 @@ from .models import User
 
 
 # Create your views here.
-def login(request):
+def log_in(request):
     if request.method == 'POST':
         data = request.POST
         user = authenticate(email=data['email'], password=data['password'])
@@ -21,8 +21,8 @@ def login(request):
 def register(request):
     if request.method == 'POST':
         data = request.POST
-        user = User(email=data[''], first_name=data['first_name'], last_name=data['last_name'],
-                    birthday=data['birthday'], description=data['description'], avtar=data['avatar'])
+        user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'],
+                    birthday=data['birthday'], description=data['description'], avatar=data['avatar'])
         user.set_password(data['password'])
         user.save()
         login(request, user)
@@ -31,7 +31,7 @@ def register(request):
         return render(request, 'register.html')
 
 
-def logout(request):
+def log_out(request):
     logout(request)
     return redirect('login')
 

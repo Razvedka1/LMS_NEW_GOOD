@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 {% load static %}
@@ -9,7 +10,7 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
             integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
             crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <script defer src="{% static  'script.js' %}"></script>
 </head>
 <body>
@@ -29,8 +30,7 @@
                 <div><a href="#">{{ user.last_name }} {{ user.first_name }}</a></div>
                 <div class="submenu_profile" style="display: none;">
                     <div>
-                        <p class="fa fa-sign-out"></p>
-                        <a style="color: rgba(238, 68, 0.83)" href="{% static 'exit.jpg' %}">Выход</a>
+                        <p class="fa fa-sign-out"><a style="color: rgba(238, 68, 0.83)" href="{% url 'logout' %}">Выход</a></p>
                     </div>
                 </div>
             </div>
@@ -44,7 +44,7 @@
     </nav>
 </header>
 <main>
-    {% block content %}
+    {% block content %}{% endblock %}
 </main>
 <footer>
     <div class="footer_container">
@@ -61,4 +61,3 @@
 </footer>
 </body>
 </html>
-{% endblock %}

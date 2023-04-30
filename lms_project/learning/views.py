@@ -8,8 +8,8 @@ from .models import Course, Lesson, Tracking
 
 def index(request):
     courses = Course.objects.all()
-    concurrent_year = datetime.now().year
-    return render(request, context={'courses': courses}, template_name='index.html')
+    current_year = datetime.now().year
+    return render(request, context={'courses': courses, 'current_year': current_year}, template_name='index.html')
 
 
 def create(request):
@@ -18,7 +18,7 @@ def create(request):
         Course.objects.create(title=data['title'], author=request.user,
                               description=data['description'], start_date=data['start_date'],
                               duration=data['duration'], price=data['price'],
-                              count_lessons=data['count_lesons'])
+                              count_lessons=data['count_lessons'])
         return redirect('index')
     else:
         return render(request, 'create.html')
@@ -41,7 +41,7 @@ def enroll(request, course_id):
     if request.user.is_anonymous:
         return redirect('login')
     else:
-        is_existed = Tracking.objects.filter(user=request.user).exists()
+        is_existed = Tracking.objects.filter(user=request.user,lesson__course=course_id).exists()
         if is_existed:
             return HttpResponse(f'Здесь мы сможем записаться на выбранный курс')
         else:
