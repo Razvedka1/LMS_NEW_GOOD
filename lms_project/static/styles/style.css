@@ -1,3 +1,13 @@
+*, *:after, *:before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: .15s ease-in-out;
+}
+
+html {
+    font-size: calc(1em + 1vw);
+}
 
 .header_container{
     display: flex;
