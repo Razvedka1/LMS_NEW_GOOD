@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, reverse
 from datetime import datetime
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Course, Lesson, Tracking
-from django import forms
+from .forms import CourseForm
 
 
 class MainView(ListView):
@@ -99,7 +99,7 @@ class CourseDeleteView(DeleteView):
 #    lessons = Lesson.objects.filter(course=course_id)
 #    context = {'course': course, 'lessons': lessons}
 #    return render(request, 'detail.html', context)
-
+#2
 
 def enroll(request, course_id):
     if request.user.is_anonymous:
