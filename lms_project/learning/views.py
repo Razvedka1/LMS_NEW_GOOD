@@ -63,7 +63,7 @@ class CourseDeleteView(DeleteView):
     model = Course
     template_name = 'delete.html'
     pk_url_kwarg = 'course_id'
-
+#1
     def get_queryset(self):
         return Course.objects.filter(id=self.kwargs.get('course_id'))
 
