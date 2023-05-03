@@ -33,7 +33,7 @@ class CourseDetailView(DetailView):
 
 class CourseCreateView(CreateView):
     model = Course
-    form_class = Course
+    form_class = CourseForm
     template_name = 'create.html'
 
     def get_success_url(self):
@@ -48,7 +48,7 @@ class CourseCreateView(CreateView):
 
 class CourseUpdateView(UpdateView):
     model = Course
-    form_class = Course
+    form_class = CourseForm
     template_name = 'create.html'
     pk_url_kwarg = 'course_id'
 
