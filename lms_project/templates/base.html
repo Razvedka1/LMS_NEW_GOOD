@@ -10,15 +10,16 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
             integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
             crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{{ STATIC_URL }}/style.css">
     <script defer src="{% static  'script.js' %}"></script>
 </head>
 <body>
 <header>
     <nav class="header_container">
         <div class="logo_container">
-            <a class="logo" href="{% url 'index' %}"><img src="{% static 'logo.jpg' %}" alt="Лого сайта"
-                                                          title="Логотип сайта"></a>
+            <a class="logo" href="{% url 'index' %}">
+                {% static 'logo.png' as logo_url %}
+                <img src="{{ logo_url }}" alt="Лого сайта" title="Логотип сайта"></a>
             <div class="describer">
                 <div class="title"><h2 translate="no">Codeby</h2></div>
                 <div class="role">онлайн-курсы</div>
@@ -28,10 +29,12 @@
             {% if user.is_authenticated %}
             <div class="profile">
                 <div><a href="#">{{ user.last_name }} {{ user.first_name }}</a></div>
+                {% comment 'Опции профиля' %}
                 <div class="submenu_profile" style="display: none;">
                     <div>
                         <p class="fa fa-sign-out"><a style="color: rgba(238, 68, 0.83)" href="{% url 'logout' %}">Выход</a></p>
                     </div>
+                    {% endcomment %}
                 </div>
             </div>
             <div><a href="{% url 'create' %}">Cоздать курс</a></div>

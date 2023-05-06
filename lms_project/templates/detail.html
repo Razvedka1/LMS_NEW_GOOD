@@ -13,15 +13,19 @@
         <p><span class="price">{{ course.price }} Р</span></p>
     </div>
     <div class="course_preview" style="margin-top: 1%; transform: none; box-shadow: none; border: none">
-        <p style="font-weight: bold">Список уроков</p>
+        {% with count_lessons=lessons.count %}
+        <p style="font-weight: bold">Уроки {{ count_lessons }} </p>
+        {% endwith %}
         {% for lesson in lessons %}
-        <p>{{ lesson.name }}</p>
+        <p style="font-weight: bold">{{forloop.counter}}. {{ lesson.name }}</p>
         <p>{{ lesson.preview }}</p>
         {% endfor %}
+        {% verbatim %}
         <form method="post" action="{% url 'enroll' course.pk %}">
             {% csrf_token %}
-            <input type="submit" value="Записаться">
+            <button type="submit" >value="Записаться"</button>
         </form>
+        {% endverbatim  %}
     </div>
 </div>
 {% endblock %}

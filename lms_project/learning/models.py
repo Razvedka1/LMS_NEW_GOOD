@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
+from  django .shortcuts import  reverse
 
 
 # Create your models here.
@@ -30,6 +31,9 @@ class Course(models.Model):
 
     def __str__(self):
         return f'{self.title}: Cтарт {self.start_date}'
+
+    def get_absolute_url(self):
+        return reverse('detail', kwargs={'course_id': self.pk})
 
 
 class Lesson(models.Model):
