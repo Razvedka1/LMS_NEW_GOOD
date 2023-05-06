@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
 {% load static %}
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
             integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
             crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{{ STATIC_URL }}/style.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}style.css">
     <script defer src="{% static  'script.js' %}"></script>
 </head>
 <body>
@@ -18,7 +18,7 @@
     <nav class="header_container">
         <div class="logo_container">
             <a class="logo" href="{% url 'index' %}">
-                {% static 'logo.png' as logo_url %}
+                {% static 'logo.jpg' as logo_url %}
                 <img src="{{ logo_url }}" alt="Лого сайта" title="Логотип сайта"></a>
             <div class="describer">
                 <div class="title"><h2 translate="no">Codeby</h2></div>

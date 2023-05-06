@@ -4,7 +4,7 @@
     <div class="course_preview" style="transform: none; box-shadow: none; border: none">
         <p><a style="color:red" href="{% url 'delete' course.pk %}">Удалить</a></p>
         <p><a style="color:blue" href="{% url 'update' course.pk %}">Редактировать</a></p>
-        <p>{{ course.title }}</p>
+        <p> {{ course.title }} </p>
         <p>Автор: {{ course.author.last_name }} {{ course.author.first_name }}</p>
         <p>Cтарт: {{ course.start_date }}</p>
         <p>Продолжительность: {{ course.duration }} месяцев/-a</p>
@@ -17,13 +17,13 @@
         <p style="font-weight: bold">Уроки {{ count_lessons }} </p>
         {% endwith %}
         {% for lesson in lessons %}
-        <p style="font-weight: bold">{{forloop.counter}}. {{ lesson.name }}</p>
-        <p>{{ lesson.preview }}</p>
+        <p style="font-weight: bold"> {{forloop.counter}}. {{ lesson.name }} </p>
+        <p> {{ lesson.preview }} </p>
         {% endfor %}
         {% verbatim %}
         <form method="post" action="{% url 'enroll' course.pk %}">
             {% csrf_token %}
-            <button type="submit" >value="Записаться"</button>
+            <button type="submit" value="Записаться"></button>
         </form>
         {% endverbatim  %}
     </div>
