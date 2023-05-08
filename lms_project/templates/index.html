@@ -6,7 +6,7 @@
     {% for course in courses %}
     <div class="course_preview">
         {{ course.get_absolute_url }}
-        <p><a href="{% url 'detail' course.pk %}"> {{ course.title|title }} </a></p>
+        <p><a href="{% url 'detail' course.pk %}"> {{ courses.title|title }} </a></p>
         <p> {{course.start_date|date:"j E"}} </p>
         <p> {{course.description|capfirst}} </p>
         <p><span class="price">{{ course.price|default:"Бесплатно" }} Р </span></p>

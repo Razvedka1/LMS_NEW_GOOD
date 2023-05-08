@@ -131,6 +131,11 @@ STATICFILES_DIRS = [
 # Установив для него значение os.path.join(BASE_DIR, 'media'),
 # Django будет хранить загруженные файлы в каталоге media в базовом каталоге проекта.
 AUTH_USER_MODEL = 'auth_app.User'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_URL = 'logout'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 

@@ -4,8 +4,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
-from django .shortcuts import reverse
-
+from django.shortcuts import reverse
+from django.contrib.auth.models import Group, Permission
 
 # Create your models here.
 # Verbose_name — удобочитаемое имя поля,
@@ -28,7 +28,9 @@ class Course(models.Model):
         verbose_name_plural = 'Курсы'
         verbose_name = 'Курс'
         ordering = ['title']
-
+        permissions = (
+            ('modify_course', 'Can modify course content'),
+        )
     def __str__(self):
         return f'{self.title}: Cтарт {self.start_date}'
 
@@ -45,6 +47,9 @@ class Lesson(models.Model):
         verbose_name_plural = 'Уроки'
         verbose_name = 'Урок'
         ordering = ['course']
+        permissions = (
+            ('modify_lesson', 'Can modify lesson content'),
+        )
 
     def __str__(self):
         return f'{self.course}: Урок {self.name}'
