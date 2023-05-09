@@ -10,7 +10,7 @@ urlpatterns = [
     # Обработчик для сброса пароля
     path('password-reset/', PasswordResetView.as_view(), name='password_reset'),
     path('password-reset/done', PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset/<uid64>/<token>', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/<uidb64>/<token>', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done', PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
 #path('logout/', LogoutView.as_view(next_page='login'), log_out, name='logout'),
