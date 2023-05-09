@@ -2,7 +2,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import User
-
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import Group, Permission
 
 # Create your views here.
 def log_in(request):
@@ -21,11 +22,13 @@ def log_in(request):
 def register(request):
     if request.method == 'POST':
         data = request.POST
-        user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'],
+        new_user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'],
                     birthday=data['birthday'], description=data['description'], avatar=data['avatar'])
-        user.set_password(data['password'])
-        user.save()
-        login(request, user)
+        new_user.set_password(data['password'])
+        new_user.save()
+        pupil = Group.objects.filter(name='Ученик')
+        new_user.groups.set(pupil)
+        login(request, new_user)
         return redirect('index')
     else:
         return render(request, 'register.html')

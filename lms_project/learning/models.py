@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 from django.shortcuts import reverse
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group, Permission
 
 # Create your models here.
