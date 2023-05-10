@@ -5,7 +5,7 @@ from .views import *
 urlpatterns = [
     path('login/', log_in, name='login'),
     path('register/', register, name='register'),
-    path('logout/', LogoutView.as_view()(next_page= 'index'), name='logout'),
+    path('logout/', LogoutView.as_view(next_page='index'), name='logout'),
     # Обработчик для смены пароля
     path('password_change/', PasswordChangeView.as_view(), name='password_change'),
     path('password_change/done/', PasswordChangeDoneView.as_view(), name='password_change_done'),
