@@ -25,5 +25,28 @@
             <button type="submit" value="Записаться"></button>
         </form>
     </div>
+
+        <p style="font-weight: bold; margin-left: 5.5%">
+            Отзывы
+            <span style = "font-weight: initial; font-size: .85em">{{ reviews.count }}</span>
+            <a style="font-size: .8em" href="{% url 'review' course.pk %}">Оставить отзыв</a>
+        </p>
+
+        <div class="reviews_container">
+            {% for review in reviews %}
+            <div class="review">
+                {%  if review.user.avatar %}
+                    <img src="{{ review.user.avatar.url">
+                {% else %}
+                    <img src="{% static 'avatar.png' %}">
+                {% endif %}
+               <p>{{ review.user.last_name }} {{ review.user.first_name }}</p>
+                <p>{{ review.content }}</p>
+            </div>
+            {% empty %}
+            <p>Отзыва пока нет Ваша<a href="{% url 'review'  course.pk %}">оценка</a>важна</p>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock %}

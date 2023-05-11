@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Lesson
+from .models import Course, Lesson, Review
 
 
 # Register your models here.
@@ -29,3 +29,9 @@ class LessonAdmin(admin.ModelAdmin):
     actions_on_top = False
     actions_on_bottom = True
     actions_selection_counter = True
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'content')
+    search_fields = ('content',)
+    list_per_page = 100

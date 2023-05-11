@@ -125,6 +125,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static/styles',
     BASE_DIR / 'static/scripts',
 ]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Media files
 # MEDIA_ROOT — это параметр в Django, который указывает полный путь к файловой системе, где будут храниться загруженные файлы.

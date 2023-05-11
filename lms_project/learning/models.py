@@ -8,6 +8,7 @@ from django.shortcuts import reverse
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group, Permission
 
+
 # Create your models here.
 # Verbose_name — удобочитаемое имя поля,
 # Default -  Значение по умолчанию для поля
@@ -32,6 +33,7 @@ class Course(models.Model):
         permissions = (
             ('modify_course', 'Can modify course content'),
         )
+
     def __str__(self):
         return f'{self.title}: Cтарт {self.start_date}'
 
@@ -63,3 +65,16 @@ class Tracking(models.Model):
 
     class Meta:
         ordering = ['-user']
+
+
+class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Ученик')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    content = models.TextField(verbose_name='Текст отзыва', max_length=250, unique_for_year='sent_date')
+    sent_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Отзывы'
+        verbose_name = 'Отзывы'
+        ordering = ('-sent_date',)
+        unique_together = ('user', 'course',)
