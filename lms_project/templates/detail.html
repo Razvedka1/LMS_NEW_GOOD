@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load static %}
 <div class="course_container">
     <div class="course_preview" style="transform: none; box-shadow: none; border: none">
         <p><a style="color:red" href="{% url 'delete' course.pk %}">Удалить</a></p>
@@ -36,7 +37,7 @@
             {% for review in reviews %}
             <div class="review">
                 {%  if review.user.avatar %}
-                    <img src="{{ review.user.avatar.url">
+                    <img src="{{ review.user.avatar.url }}">
                 {% else %}
                     <img src="{% static 'avatar.png' %}">
                 {% endif %}

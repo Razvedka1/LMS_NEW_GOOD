@@ -6,6 +6,7 @@ from datetime import datetime
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Course, Lesson, Tracking, Review
 from .forms import CourseForm
+from .forms import ReviewForm
 
 
 class MainView(ListView):
@@ -129,6 +130,16 @@ def enroll(request, course_id):
 
 
 @login_required()
+@permission_required('learning.add_review', raise_exception=False)
 def review(request, course_id):
-    if request.method == 'GET':
-        return render(request, 'review.html')
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            Review.objects.create(content=data['content'],
+                                  course=Course.objects.get(id=course_id),
+                                  user=request.user)
+        return redirect(reverse('detail', kwargs={'course_id': course_id}))
+    else:
+        form = ReviewForm()
+        return render(request, 'review.html', {'form': form})
