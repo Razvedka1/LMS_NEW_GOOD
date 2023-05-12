@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from datetime import datetime
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Course, Lesson, Tracking, Review
-from .forms import CourseForm
-from .forms import ReviewForm
+from .forms import CourseForm, ReviewForm
+from django.core.exceptions import NON_FIELD_ERRORS
 
 
 class MainView(ListView):
@@ -134,6 +135,9 @@ def enroll(request, course_id):
 def review(request, course_id):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
+        if form.errors:
+            errors = form.errors[NON_FIELD_ERRORS]
+            return render(request, 'review.html', {'form': form, 'errors': errors})
         if form.is_valid():
             data = form.cleaned_data
             Review.objects.create(content=data['content'],

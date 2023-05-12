@@ -10,4 +10,4 @@ class CourseForm(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ('content')
+        fields = ('content',)
