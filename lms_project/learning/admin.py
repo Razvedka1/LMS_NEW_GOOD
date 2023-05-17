@@ -5,7 +5,7 @@ from .models import Course, Lesson, Review
 # Register your models here.
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'start_date', 'description',)
+    list_display = ('title',  'start_date', 'description',)
     list_display_links = ('title', 'start_date',)  # Перенапраляет на редактирование записи
     list_editable = ('description',)  # поле для редактирования превращает в теги.
     # exclude = ('description', 'duration', 'price') # ЭТО НЕ ВЫВОДИМЫЕ ПОЛЯ -EXCLUDE
@@ -19,6 +19,7 @@ class CourseAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     actions_selection_counter = True  # Позволяет выводить кол-во записей при выборе.
     save_on_top = True  # Становится сверху форм в джанго на запущенном сервере.
+    filter_horizontal = ('authors',)
 
 
 @admin.register(Lesson)
@@ -29,6 +30,8 @@ class LessonAdmin(admin.ModelAdmin):
     actions_on_top = False
     actions_on_bottom = True
     actions_selection_counter = True
+
+
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
