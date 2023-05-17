@@ -22,9 +22,11 @@ class MainView(ListView):
 
 
 class CourseDetailView(DetailView):
+    model = Lesson
     template_name = 'detail.html'
-    context_object_name = 'course'
+    context_object_name = 'lessons'
     pk_url_kwarg = 'course_id'
+
 
     def get_queryset(self):
         return Lesson.objects.select_related('course').filter(course=self.kwargs.get('course_id'))
