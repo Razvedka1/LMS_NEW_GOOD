@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db import transaction
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
@@ -21,7 +22,7 @@ class MainView(ListView):
         return context
 
 
-class CourseDetailView(DetailView):
+class CourseDetailView(ListView):
     model = Lesson
     template_name = 'detail.html'
     context_object_name = 'lessons'
@@ -48,10 +49,11 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return reverse('detail', kwargs={'course_id': self.object.id})
 
     def form_valid(self, form):
-        course = form.save(commit=False)
-        course.author = self.request.user
-        course.save()
-        return super(CourseCreateView, self).form_valid(form)
+        with transaction.atomic():
+            course = form.save(commit=False)
+            course.author = self.request.user
+            course.save()
+            return super(CourseCreateView, self).form_valid(form)
 
 
 class CourseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -115,6 +117,8 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 # 2
 
 
+
+@transaction.atomic
 @login_required
 @permission_required('learning.add_tracking', raise_exception=True)
 def enroll(request, course_id):
