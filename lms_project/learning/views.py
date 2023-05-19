@@ -20,11 +20,11 @@ class MainView(ListView, FormView):
 
     def get_queryset(self):
         queryset = MainView.queryset
-        if {'search', 'price_order'} != self.request.GET.keys():
+        if {'search', 'price_order', 'price'} != self.request.GET.keys():
             return queryset
         else:
             search_query = self.request.GET.get('search')
-            price_order_by = self.request.GET.get('price_order',)
+            price_order_by = self.request.GET.get('price_order','-price')
             filter = Q(title__icontains=search_query) | Q(description__icontains=search_query)
             queryset = queryset.filter(filter).order_by(price_order_by)
         return queryset

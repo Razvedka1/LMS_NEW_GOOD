@@ -3,8 +3,8 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('login/', log_in, name='login'),
-    path('register/', register, name='register'),
+    path('login/', UserLoginView.as_view(), name='login'),
+    path('register/', RegisterView.as_view(), name='register'),
     path('logout/', LogoutView.as_view(next_page='index'), name='logout'),
     # Обработчик для смены пароля
     path('password_change/', PasswordChangeView.as_view(), name='password_change'),
