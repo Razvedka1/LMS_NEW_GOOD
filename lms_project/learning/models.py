@@ -44,7 +44,7 @@ class Course(models.Model):
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс', related_name='lessons', related_query_name='lesson')
     name = models.CharField(verbose_name='Название урока', max_length=25, unique=True)
-    preview = models.TextField(verbose_name='Описание урока', max_length=100)
+    preview = models.TextField(verbose_name='Описание урока', max_length=200)
 
     class Meta:
         verbose_name_plural = 'Уроки'

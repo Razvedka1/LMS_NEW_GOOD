@@ -1,25 +1,42 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
+from django.db.models import Q
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from datetime import datetime
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from .models import Course, Lesson, Tracking, Review
-from .forms import CourseForm, ReviewForm
+from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm
 from django.core.exceptions import NON_FIELD_ERRORS
 
 
-class MainView(ListView):
+class MainView(ListView, FormView):
     queryset = Course.objects.all()
     context_object_name = 'courses'
-    paginate_by = 2  # Указывает число в виде инт  сколько выводится в шаблон за 1 раз
+    #paginate_by = 2  # Указывает число в виде инт  сколько выводится в шаблон за 1 раз
+    form_class = OrderByAndSearchForm
 
+    def get_queryset(self):
+        queryset = MainView.queryset
+        if {'search', 'price_order'} != self.request.GET.keys():
+            return queryset
+        else:
+            search_query = self.request.GET.get('search')
+            price_order_by = self.request.GET.get('price_order',)
+            filter = Q(title__icontains=search_query) | Q(description__icontains=search_query)
+            queryset = queryset.filter(filter).order_by(price_order_by)
+        return queryset
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MainView, self).get_context_data(**kwargs)
         context['current_year'] = datetime.now().year
         return context
+    def get_initial(self):
+        initial = super(MainView, self).get_initial()
+        initial['search'] = self.request.GET.get('search', '')
+        initial['price_order'] = self.request.GET.get('price_order', 'title')
+        return initial
 
 
 class CourseDetailView(ListView):
@@ -48,6 +65,7 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('detail', kwargs={'course_id': self.object.id})
 
+
     def form_valid(self, form):
         with transaction.atomic():
             course = form.save(commit=False)
@@ -69,6 +87,22 @@ class CourseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('detail', kwargs={'course_id': self.object.id})
+
+class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+    model = Lesson
+    form_class = LessonForm
+    template_name = 'create_lesson.html'
+    pk_url_kwarg = 'course_id'
+
+    permission_required = ('learning.add_lesson',)
+
+    def get_success_url(self):
+        return reverse('detail', kwargs={'course_id': self.kwargs.get('course_id')})
+
+    def get_form(self, form_class=None):
+        form = super(LessonCreateView, self).get_form()
+        form.fields['course'].queryset = Course.objects.filter(authors=self.request.user)
+        return form
 
 
 class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
