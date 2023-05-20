@@ -16,25 +16,15 @@ class UserLoginView(LoginView):
     next_page = 'index'
 
 class RegisterView(CreateView):
-    form_class = 'register.html'
+    form_class = RegisterForm
+    template_name = 'register.html'
 
-    def form_valid(self, form):
-        user = form.save('')
+    def form(self, form):
+        user = form.save()
         pupil = Group.objects.filter(name='Ученик')
         user.groups.set(pupil)
         login(self.request, user)
         return redirect('index')
-1. Метод `form_valid` принимает два аргумента: `self` (который относится к текущему экземпляру класса) и `form` (который является проверенными данными формы).
-
-2. Метод form.save() сохраняет данные формы в базу данных и возвращает пользовательский объект.
-
-3. Переменная «ученик» запрашивает модель «Группа», чтобы получить групповой объект с именем «Студент».
-
-4. Метод user.groups.set(pupil) добавляет пользователя в группу «Студент».
-
-5. Функция входа в систему позволяет пользователю войти в систему.
-
-6. Оператор return redirect('index')` перенаправляет пользователя на индексную страницу веб-сайта.
 
 
 
@@ -50,7 +40,8 @@ class RegisterView(CreateView):
 
 
 
-#
+
+
 #def log_in(request):
 #    if request.method == 'POST':
 #        data = request.POST
