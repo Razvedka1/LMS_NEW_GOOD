@@ -243,3 +243,7 @@ footer{
 .copyright-mark img {
     width: 7%;
 }
+
+.errorlist {
+    color: red;
+}

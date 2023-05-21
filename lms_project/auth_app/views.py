@@ -19,7 +19,7 @@ class RegisterView(CreateView):
     form_class = RegisterForm
     template_name = 'register.html'
 
-    def form(self, form):
+    def form_valid(self, form):
         user = form.save()
         pupil = Group.objects.filter(name='Ученик')
         user.groups.set(pupil)
