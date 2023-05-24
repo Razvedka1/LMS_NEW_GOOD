@@ -3,7 +3,7 @@ from .views import *
 
 
 urlpatterns = [
-    path('', MainView.as_view(template_name='index.html', queryset=Course.objects.all(), context_object_name='courses'),
+    path('', MainView.as_view(),
          name='index'),
     path('detail/<int:course_id>/', CourseDetailView.as_view(), name='detail'),
     path('create/', CourseCreateView.as_view(), name='create'),  # Параметр name позволяет принимать обратный поиск адресов.
@@ -16,6 +16,7 @@ urlpatterns = [
     path('add_booking/<int:course_id>/', add_booking, name='add_booking'),
     path('remove_booking/<int:course_id>/', remove_booking, name='remove_booking'),
     path('favourites/', FavouriteView.as_view(), name='favourites'),
+    path('settings/', SettingFormView.as_view(), name='settings'),
 ]
 # Рабочий вариант! r'^detail/(?P<course_id>\d+)/$ - бесконечный хоть до 100.
 # Рабочий вариант! r'^detail/(?P<course_id>[1-9])/$ - как в  методичке.

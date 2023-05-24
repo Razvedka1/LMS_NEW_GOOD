@@ -15,7 +15,7 @@ from django.conf import settings
 class UserLoginView(LoginView):
     authentication_form = LoginForm
     template_name = 'login.html'
-    next_page = 'courses'
+    next_page = 'index'
 
     def form_valid(self, form):
         is_remember = self.request.POST.get('is_remember')

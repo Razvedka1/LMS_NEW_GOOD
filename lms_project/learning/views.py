@@ -3,19 +3,19 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.db import transaction
 from django.db.models import Q
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 from datetime import datetime
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from .models import Course, Lesson, Tracking, Review
-from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm
+from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm, SettingForm
 from django.core.exceptions import NON_FIELD_ERRORS
 
 
 class MainView(ListView, FormView):
     queryset = Course.objects.all()
     form_class = OrderByAndSearchForm
-    context_object_name = 'course'
+    context_object_name = 'courses'
     template_name = 'index.html'
 
     # paginate_by = 2  # Указывает число в виде инт  сколько выводится в шаблон за 1 раз
@@ -41,6 +41,9 @@ class MainView(ListView, FormView):
         initial['search'] = self.request.GET.get('search', '')
         initial['price_order'] = self.request.GET.get('price_order', 'title')
         return initial
+
+    def get_paginate_by(self, queryset):
+        return self.request.COOKIES.get('paginate_by', 5)
 
 
 class CourseDetailView(ListView):
@@ -123,6 +126,16 @@ class FavouriteView(MainView):
         queryset = super(FavouriteView, self).get_queryset()
         ids = self.request.session.get('favourites', list())
         return queryset.filter(id__in=ids)
+class SettingFormView(FormView):
+    form_class = SettingForm
+
+    def post(self, request, *args, **kwargs):
+        paginate_by = request.POST.get('paginate_by')
+        response = HttpResponseRedirect(reverse('index'), 'Настройки успешно!')
+        response.set_cookie('paginate_by', value=paginate_by, secure=False,
+                            httponly=False, samesite='Lax', max_age=60*60*24*365)
+        return response
+
 
 
 class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -170,6 +183,10 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 #    return render(request, 'detail.html', context)
 # 2
 
+    def get_initial(self):
+        initial = super(SettingFormView, self.get_initial)
+        initial['paginate_by'] = self.request.COOKIES.get('paginate_by', 2)
+        return initial
 
 @transaction.atomic
 @login_required
@@ -186,6 +203,7 @@ def enroll(request, course_id):
         records = [Tracking(lesson=lesson, user=request.user, passed=False) for lesson in lessons]
         Tracking.objects.bulk_create(records)
         return HttpResponse('Вы записаны на данный курс')
+
 
 
 @login_required()

@@ -4,29 +4,28 @@
 
 <form id="form" method="get">
     {{ form }}
-    <button type = "submit">Получить</button>
+    <button type="submit">Получить</button>
 </form>
 
 <div class="courses_container">
-    {% now 'SHORT_DATETIME_FORMAT' %}
     {% for course in courses %}
     <div class="course_preview">
-        {{ course.get_absolute_url }}
         <p><a href="{% url 'detail' course.pk %}"> {{ course.title|title }} </a></p>
 
         {% if not course.pk in request.session.favourites or not request.session.favourites %}
-        <div class="favourite_container">
-            <form id ="favourites" method = "post" action="{% url 'add_booking' course.pk %}" title="Принять участие">
+        <div id="favourite_container">
+            <form id="favourite_form" method="post" action="{% url 'add_booking' course.pk %}" title="Принять участие">
                 {% csrf_token %}
-                <button type="submit" class="fa fa-plus" ></button>
+                <button type="submit" class="fa fa-plus" style="color: #fa9405"></button>
             </form>
         </div>
         {% else %}
-        <div class="favourite_container">
-             <form id ="favourites" method = "post" action="{% url 'remove_booking' course.pk %}" title="Принять участие">
-                 {% csrf_token %}
-                 <button type="submit" class="fa fa-check" style="color: green"></button>
-             </form>
+        <div id="favourite_container">
+            <form id="favourite_form" method="post" action="{% url 'remove_booking' course.pk %}"
+                  title="Принять участие">
+                {% csrf_token %}
+                <button type="submit" class="fa fa-check" style="color: green"></button>
+            </form>
         </div>
         {% endif %}
 
@@ -38,4 +37,18 @@
     <p>На данный момент не найдено не одного курса. Проверьте страницу позже.</p>
     {% endfor %}
 </div>
-{% endblock %}
+
+<div>
+    <span>
+        {% if page_obj.has_previous %}
+        <a href="?page=1">К первой</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+        {% endif %}
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_page }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Вперёд</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">В конец</a>
+        {% endif %}
+    </span>
+</div>
+    {% endblock %}
