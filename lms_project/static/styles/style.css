@@ -156,13 +156,27 @@ background: #ffe8e8;
     background: #fa9405bf;
 }
 
+/* Урок 13 */
+
+.favourite_container {
+    float: right;
+    weight: 30%;
+}
+#favourite_form button {
+    outline: solid;
+    background: white;
+    border: solid;
+    box-shadow: none;
+}
+
+
 /* Course container */
 .courses_container, .reviews_container {
-    display: grid;
-    width: 90%
-    margin: 5% 8%;
-    justify-content: center;
-    grid-template-columns: repeat(1, 25%);
+    display: block;
+    width: auto;
+    margin: 1em;
+    justify-content: space-between;
+    grid-template-columns: repeat(2, 25%);
     grid-gap: 30px;
 }
 
@@ -247,3 +261,4 @@ footer{
 .errorlist {
     color: red;
 }
+

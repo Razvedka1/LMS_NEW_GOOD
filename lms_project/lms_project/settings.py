@@ -30,8 +30,6 @@ ALLOWED_HOSTS = []
 INTERNAL_IPS = ["127.0.0.1",
                 ]
 
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -57,6 +55,21 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
+
+# Session settings
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 30 # 2  недели куки будут живы
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# Запомнить пользователя
+REMEMBER_KEY = 'is_remember'
+REMEMBER_AGE = 60 * 60 * 24 * 365 # 1 год
+
+# SESSION_FILE_PATH = BASE_DIR / 'session'
 
 ROOT_URLCONF = 'lms_project.urls'
 
@@ -136,7 +149,6 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
 
 # Media files
 # MEDIA_ROOT — это параметр в Django, который указывает полный путь к файловой системе, где будут храниться загруженные файлы.

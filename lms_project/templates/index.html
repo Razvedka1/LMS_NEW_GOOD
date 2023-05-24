@@ -13,6 +13,23 @@
     <div class="course_preview">
         {{ course.get_absolute_url }}
         <p><a href="{% url 'detail' course.pk %}"> {{ course.title|title }} </a></p>
+
+        {% if not course.pk in request.session.favourites or not request.session.favourites %}
+        <div class="favourite_container">
+            <form id ="favourites" method = "post" action="{% url 'add_booking' course.pk %}" title="Принять участие">
+                {% csrf_token %}
+                <button type="submit" class="fa fa-plus" ></button>
+            </form>
+        </div>
+        {% else %}
+        <div class="favourite_container">
+             <form id ="favourites" method = "post" action="{% url 'remove_booking' course.pk %}" title="Принять участие">
+                 {% csrf_token %}
+                 <button type="submit" class="fa fa-check" style="color: green"></button>
+             </form>
+        </div>
+        {% endif %}
+
         <p> {{course.start_date|date:"j E"}} </p>
         <p> {{course.description|capfirst}} </p>
         <p><span class="price">{{ course.price|default:"Бесплатно" }} Р </span></p>

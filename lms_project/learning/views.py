@@ -14,9 +14,11 @@ from django.core.exceptions import NON_FIELD_ERRORS
 
 class MainView(ListView, FormView):
     queryset = Course.objects.all()
-    context_object_name = 'courses'
-    #paginate_by = 2  # Указывает число в виде инт  сколько выводится в шаблон за 1 раз
     form_class = OrderByAndSearchForm
+    context_object_name = 'course'
+    template_name = 'index.html'
+
+    # paginate_by = 2  # Указывает число в виде инт  сколько выводится в шаблон за 1 раз
 
     def get_queryset(self):
         queryset = MainView.queryset
@@ -24,14 +26,16 @@ class MainView(ListView, FormView):
             return queryset
         else:
             search_query = self.request.GET.get('search')
-            price_order_by = self.request.GET.get('price_order','-price')
+            price_order_by = self.request.GET.get('price_order', '-price')
             filter = Q(title__icontains=search_query) | Q(description__icontains=search_query)
             queryset = queryset.filter(filter).order_by(price_order_by)
         return queryset
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MainView, self).get_context_data(**kwargs)
         context['current_year'] = datetime.now().year
         return context
+
     def get_initial(self):
         initial = super(MainView, self).get_initial()
         initial['search'] = self.request.GET.get('search', '')
@@ -45,6 +49,15 @@ class CourseDetailView(ListView):
     context_object_name = 'lessons'
     pk_url_kwarg = 'course_id'
 
+    def get(self, request, *args, **kwargs):
+        views = request.session.setdefault('views', {})
+        course_id = str(kwargs[CourseDetailView.pk_url_kwarg])
+        count = views.get(course_id, 0)
+        views[course_id] = count + 1
+        request.session['views'] = views
+        request.session.modified = True
+
+        return super(CourseDetailView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
         return Lesson.objects.select_related('course').filter(course=self.kwargs.get('course_id'))
@@ -64,7 +77,6 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse('detail', kwargs={'course_id': self.object.id})
-
 
     def form_valid(self, form):
         with transaction.atomic():
@@ -88,6 +100,7 @@ class CourseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('detail', kwargs={'course_id': self.object.id})
 
+
 class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     model = Lesson
     form_class = LessonForm
@@ -103,6 +116,13 @@ class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
         form = super(LessonCreateView, self).get_form()
         form.fields['course'].queryset = Course.objects.filter(authors=self.request.user)
         return form
+
+class FavouriteView(MainView):
+
+    def get_queryset(self):
+        queryset = super(FavouriteView, self).get_queryset()
+        ids = self.request.session.get('favourites', list())
+        return queryset.filter(id__in=ids)
 
 
 class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -151,7 +171,6 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 # 2
 
 
-
 @transaction.atomic
 @login_required
 @permission_required('learning.add_tracking', raise_exception=True)
@@ -186,3 +205,21 @@ def review(request, course_id):
     else:
         form = ReviewForm()
         return render(request, 'review.html', {'form': form})
+
+
+def add_booking(request, course_id):
+    if request.method == 'POST':
+        favourites = request.session.get('favourites', list())
+        favourites.append(course_id)
+        request.session['favourites'] = favourites
+        request.session.modified = True
+
+    return redirect(reverse('index'))
+
+
+def remove_booking(request, course_id):
+    if request.method == 'POST':
+        request.session.get('favourites').remove(course_id)
+        request.session.modified = True
+
+    return redirect(reverse('index'))
