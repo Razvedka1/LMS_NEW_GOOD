@@ -128,7 +128,8 @@ class FavouriteView(MainView):
         return queryset.filter(id__in=ids)
 class SettingFormView(FormView):
     form_class = SettingForm
-
+    template_name ='settings.html'
+    pk_url_kwarg = 'setting'
     def post(self, request, *args, **kwargs):
         paginate_by = request.POST.get('paginate_by')
         response = HttpResponseRedirect(reverse('index'), 'Настройки успешно!')

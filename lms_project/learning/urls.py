@@ -16,7 +16,7 @@ urlpatterns = [
     path('add_booking/<int:course_id>/', add_booking, name='add_booking'),
     path('remove_booking/<int:course_id>/', remove_booking, name='remove_booking'),
     path('favourites/', FavouriteView.as_view(), name='favourites'),
-    path('settings/', SettingFormView.as_view(), name='settings'),
+    path('settings/settings', SettingFormView.as_view(), name='settings'),
 ]
 # Рабочий вариант! r'^detail/(?P<course_id>\d+)/$ - бесконечный хоть до 100.
 # Рабочий вариант! r'^detail/(?P<course_id>[1-9])/$ - как в  методичке.
