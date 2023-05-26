@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 from django.db.models import Q
-
+from django.db.models.signals import pre_save
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 from datetime import datetime
@@ -111,6 +111,14 @@ class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     pk_url_kwarg = 'course_id'
 
     permission_required = ('learning.add_lesson',)
+
+    def form_valid(self, form):
+        error = pre_save.send(sender=LessonCreateView.model, instance=form.save(commit=False))
+        if error[0][1]:
+            form.errors[NON_FIELD_ERRORS] = [error[0][1]]
+            return super(LessonCreateView, self).form_invalid(form)
+        else:
+            return super(LessonCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('detail', kwargs={'course_id': self.kwargs.get('course_id')})
