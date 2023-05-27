@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'auth_app',
-    'learning',
+    #Custom apps
+    'auth_app.apps.AuthAppConfig',
+    'learning.apps.LearningConfig',
     # debug-BAR!
     'debug_toolbar',
 ]

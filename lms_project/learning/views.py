@@ -10,7 +10,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Course, Lesson, Tracking, Review
 from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm, SettingForm
 from django.core.exceptions import NON_FIELD_ERRORS
-
+from .signals import set_views
 
 class MainView(ListView, FormView):
     queryset = Course.objects.all()
@@ -53,13 +53,8 @@ class CourseDetailView(ListView):
     pk_url_kwarg = 'course_id'
 
     def get(self, request, *args, **kwargs):
-        views = request.session.setdefault('views', {})
-        course_id = str(kwargs[CourseDetailView.pk_url_kwarg])
-        count = views.get(course_id, 0)
-        views[course_id] = count + 1
-        request.session['views'] = views
-        request.session.modified = True
-
+        set_views.send(sender=self.__class__, session=request.session, pk_url_kwarg=CourseDetailView.pk_url_kwarg,
+                       id=kwargs[CourseDetailView.pk_url_kwarg])
         return super(CourseDetailView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -114,6 +109,7 @@ class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
 
     def form_valid(self, form):
         error = pre_save.send(sender=LessonCreateView.model, instance=form.save(commit=False))
+        print(error)
         if error[0][1]:
             form.errors[NON_FIELD_ERRORS] = [error[0][1]]
             return super(LessonCreateView, self).form_invalid(form)
