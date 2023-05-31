@@ -9,7 +9,7 @@ from django.utils import timezone  #
 account_access = Signal()
 
 
-def send_login_user_email(**kwargs): #
+def send_login_user_email(**kwargs):  #
     template_name = 'registration/account_access_email.html'
     request = kwargs['request']
     context = {
@@ -24,7 +24,6 @@ def send_login_user_email(**kwargs): #
     email.send(fail_silently=True)
 
 
-
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def grant_pupil_rights(sender, instance, created=True, **kwargs):
     if created:
@@ -32,6 +31,4 @@ def grant_pupil_rights(sender, instance, created=True, **kwargs):
         instance.groups.set(pupil)
         print(f'Пользователь {instance} успешно добавлен в группу "Ученик"')
 
-
-
-        account_access.connect(send_login_user_email) #
+        account_access.connect(Signal)  #

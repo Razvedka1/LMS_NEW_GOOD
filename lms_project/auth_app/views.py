@@ -9,7 +9,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group, Permission
 from datetime import datetime
 from django.conf import settings
-from .signals import send_login_user_email
+from .signals import account_access
 
 # Create your views here.
 
@@ -28,7 +28,7 @@ class UserLoginView(LoginView):
 
             #ОТПРАВКА EMAIL С СООБЩЕНИЕМ О ВХОДЕ В АККАУНТ
 
-            send_login_user_email(sender=self.__class__, request=self.request) ###
+            account_access.send(sender=self.__class__, request=self.request) ###
 
 
 
