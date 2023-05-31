@@ -9,6 +9,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group, Permission
 from datetime import datetime
 from django.conf import settings
+from .signals import send_login_user_email
 
 # Create your views here.
 
@@ -24,8 +25,15 @@ class UserLoginView(LoginView):
             self.request.session.set_expiry(settings.REMEMBER_AGE)
         elif is_remember == 'off':
             self.request.session.set_expiry(0)
-        return super(UserLoginView, self).form_valid(form)
-    
+
+            #ОТПРАВКА EMAIL С СООБЩЕНИЕМ О ВХОДЕ В АККАУНТ
+
+            send_login_user_email(sender=self.__class__, request=self.request) ###
+
+
+
+            return super(UserLoginView, self).form_valid(form)
+
 
 class RegisterView(CreateView):
     form_class = RegisterForm

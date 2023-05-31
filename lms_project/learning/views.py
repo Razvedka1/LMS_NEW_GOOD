@@ -10,7 +10,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Course, Lesson, Tracking, Review
 from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm, SettingForm
 from django.core.exceptions import NON_FIELD_ERRORS
-from .signals import set_views, course_enroll
+from .signals import set_views,  course_enroll, get_certificate
 
 class MainView(ListView, FormView):
     queryset = Course.objects.all()
@@ -249,3 +249,8 @@ def remove_booking(request, course_id):
         request.session.modified = True
 
     return redirect(reverse('index'))
+
+@login_required #
+def get_certificate_view(request):
+    get_certificate.send(sender=request.user)
+    return HttpResponse('Сертификат отправлен на Ваш email')
