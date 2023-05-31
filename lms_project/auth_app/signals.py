@@ -31,4 +31,4 @@ def grant_pupil_rights(sender, instance, created=True, **kwargs):
         instance.groups.set(pupil)
         print(f'Пользователь {instance} успешно добавлен в группу "Ученик"')
 
-        account_access.connect(send_login_user_email)  #
+account_access.connect(send_login_user_email)  #
