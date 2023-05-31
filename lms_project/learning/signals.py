@@ -34,7 +34,7 @@ def incr_views(sender, **kwargs):
 
 
 def send_enroll_email(**kwargs):
-    template_name = 'emails/enroll_email.html'
+    template_name = 'emails/course_info_email.html'
     course = Course.objects.get(id=kwargs['course_id'])
     context = {
         'course': course,
@@ -55,11 +55,10 @@ def send_user_certificate(**kwargs): #
         '\n Во вложении прилагаем сертиикат о прохлждении'
     }
     email = EmailMultiAlternatives(subject='Сертификат о прохождении курса | Платформа Codeby',
-                                   to=kwargs['sender'].email)
+                                   to=[kwargs['sender'].email])
     email.attach_alternative(render_to_string(template_name, context), mimetype='text/html')
-    email.attach_file(path=settings.MEDIA_ROOT /'certificates/certificate.jpg', mimetype='image/jpg')
+    email.attach_file(path=settings.MEDIA_ROOT / 'certificate/certificate.jpg', mimetype='image/jpg')
     email.send(fail_silently=True)
-
 
 
 @receiver(post_save, sender=Lesson) #
@@ -77,18 +76,18 @@ def send_info_email(sender, instance, **kwargs):
                             f'\n Подробную инормацию Вы можете получить по ссылке ниже'
             }
             user = get_user_model()
-            recipients = user.objects.exlude(is_staff= True).values_list('email', flat=True)
+            recipients = user.objects.exclude(is_staff=True).values_list('email', flat=True)
 
             connection = get_connection(fail_silently=True) ##
             EmailMessage.content_subtype ='html'
             emails = [
                 EmailMessage(subject='Время обучаться новому | Платформа Codeby',
-                             body= render_to_string(template_name, context),
+                             body=render_to_string(template_name, context),
                              to=[email], connection=connection)
                 for email in recipients
             ]
 
-            connection.send_messsages(emails)
+            connection.send_messages(emails)
             connection.close()
 
 
