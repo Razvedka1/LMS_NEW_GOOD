@@ -9,6 +9,8 @@ from datetime import datetime
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from .models import Course, Lesson, Tracking, Review
 from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm, SettingForm
+from django.core.cache import cache, caches #Les 16
+from django.core.cache.backends.redis import RedisCache # Les 16
 from django.core.exceptions import NON_FIELD_ERRORS
 from .signals import set_views,  course_enroll, get_certificate
 
@@ -21,6 +23,12 @@ class MainView(ListView, FormView):
     # paginate_by = 2  # Указывает число в виде инт  сколько выводится в шаблон за 1 раз
 
     def get_queryset(self):
+        if 'courses' in cache:
+            queryset = cache.get('courses')
+        else:
+            queryset = MainView.queryset
+            cache.set('courses', queryset, timeout=300)
+
         queryset = MainView.queryset
         if {'search', 'price_order', 'price'} != self.request.GET.keys():
             return queryset
@@ -58,9 +66,11 @@ class CourseDetailView(ListView):
         return super(CourseDetailView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Lesson.objects.select_related('course').filter(course=self.kwargs.get('course_id'))
+        course_id = self.kwargs.get('course_id')
+        queryset = cache.get_or_set(f'course_{course_id}_lessons', Lesson.objects.select_related('course').filter(course=course_id), timeout=30)
+        return queryset
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs): # Lesson 16
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         context['reviews'] = Review.objects.select_related('user').filter(course=self.kwargs.get('course_id'))
         return context
@@ -73,15 +83,15 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     permission_required = ('learning.add_course',)
 
-    def get_success_url(self):
-        return reverse('detail', kwargs={'course_id': self.object.id})
-
-    def form_valid(self, form):
+    def form_valid(self, form): # Leson 16
         with transaction.atomic():
             course = form.save(commit=False)
             course.author = self.request.user
             course.save()
-            return super(CourseCreateView, self).form_valid(form)
+
+            cache.delete('courses')
+
+            return redirect(reverse('create_lesson', kwargs={'course_id': course.id}))
 
 
 class CourseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -148,6 +158,11 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     pk_url_kwarg = 'course_id'
 
     permission_required = ('learning.delete_course',)
+
+    def form_valid(self, form): # les 16
+        course_id = self.kwargs.get('course_id')
+        cache.delete_many(['courses', f"course_{course_id}_lessons"])
+        return super(CourseDeleteView, self).form_valid(form)
 
     # 1
     def get_queryset(self):
