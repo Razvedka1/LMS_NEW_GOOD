@@ -83,12 +83,11 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     permission_required = ('learning.add_course',)
 
-    def form_valid(self, form): # Leson 16
+    def form_valid(self, form): # Lesson 16
         with transaction.atomic():
             course = form.save(commit=False)
-            course.author = self.request.user
             course.save()
-
+            course.authors.add(self.request.user)
             cache.delete('courses')
 
             return redirect(reverse('create_lesson', kwargs={'course_id': course.id}))
